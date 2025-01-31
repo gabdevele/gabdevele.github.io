@@ -1,0 +1,203 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkers Table</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(141deg, rgba(199,178,147,1) 0%, rgba(175,158,133,1) 64%, rgba(148,129,102,1) 100%);
+            margin: 0;
+        }
+        a {
+            color: #000;
+        }
+        #g table {
+            border: 3px solid black;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #g td {
+            width: 3.5em;
+            height: 3.5em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #000;
+        }
+        .c-m {
+            background-color: #664229;
+        }
+        .c-b {
+            background-color: #D2B48C;
+        }
+        .c-w {
+            background-color: #e3dacc;
+        }
+        .c-n {
+            background-color: #212121;
+        }
+        .p {
+            display: block;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+        span {
+            text-align: center;
+        }
+        span:not(.p){
+            margin-bottom: 20px;
+        }
+        .c {
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 12px;
+        }
+        button {
+            padding: 12px;
+            background-color: #D2B48C;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #c19a6b;
+            transform: scale(1.05);
+        }
+        h1 {
+            margin: 0;
+            padding: 4px;
+            font-size: 2em;
+        }
+
+        @media (max-width: 630px) {
+            #g td {
+                width: 40px;
+                height: 40px;
+            }
+            .p {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        @media screen and (max-width: 400px) {
+            #g td {
+                width: 30px;
+                height: 30px;
+            }
+            .p {
+                width: 15px;
+                height: 15px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <h1>Checkers</h1>
+    <span>This website generates a checkers table with the pieces in their initial positions. <br/>By clicking the button, you can shuffle the pieces randomly while maintaining a valid configuration.</span>
+
+    <div class="c">
+        <div id="g">
+        </div>
+        <button onclick="shuffle()">Shuffle</button>
+    </div>
+
+    <span>made with ❤ by <a href="https://github.com/gabdevele/">@gabdevele</a></span>
+</body>
+<script>
+const dame = [
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 0, 2, 0, 2, 0, 2],
+    [2, 0, 2, 0, 2, 0, 2, 0],
+    [0, 2, 0, 2, 0, 2, 0, 2]
+];
+
+const createTable = () => {
+    const t = document.createElement('table');
+    t.setAttribute('cellspacing', '0');
+    t.setAttribute('cellpadding', '0');
+    for (let i = 0; i < 8; i++) {
+        const r = t.insertRow();
+        for (let j = 0; j < 8; j++) {
+            const c = r.insertCell();
+            c.className = (i + j) % 2 === 0 ? 'c-m' : 'c-b';
+        }
+    }
+    document.querySelector('#g').appendChild(t);
+}
+
+const addPieces = () => {
+    const table = document.querySelector('table');
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            const cell = table.rows[i].cells[j];
+            cell.innerHTML = '';
+            if (dame[i][j] === 1 || dame[i][j] === 2) {
+                const dama = document.createElement('span');
+                dama.className = `p ${dame[i][j] === 1 ? 'c-n' : 'c-w'}`;
+                cell.appendChild(dama);
+            }
+        }
+    }
+}
+
+const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+const shuffle = () => {
+    const evenPositions = [];
+    const oddPositions = [];
+    dame.forEach((row, i) => {
+        row.forEach((cell, j) => {
+            ((i + j) % 2 === 0 ? evenPositions : oddPositions).push(cell);
+        });
+    });
+
+    shuffleArray(evenPositions);
+    shuffleArray(oddPositions);
+
+    let evenIndex = 0;
+    let oddIndex = 0;
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            if ((i + j) % 2 === 0) {
+                dame[i][j] = evenPositions[evenIndex++];
+            } else {
+                dame[i][j] = oddPositions[oddIndex++];
+            }
+        }
+    }
+
+    addPieces();
+}
+
+createTable();
+addPieces();
+</script>
+</html>

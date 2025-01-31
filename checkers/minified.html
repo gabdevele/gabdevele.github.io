@@ -1,0 +1,26 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkers Table</title>
+    <style>
+.p,button{cursor:pointer}a,button{color:#000}#g table,button{box-shadow:0 4px 8px rgba(0,0,0,.1)}body,h1{margin:0}body{display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;background:linear-gradient(141deg,#c7b293 0,#af9e85 64%,#948166 100%)}#g td,.p{justify-content:center}#g table{border:3px solid #000;border-collapse:collapse}#g td{width:3.5em;height:3.5em;display:inline-flex;align-items:center;border:1px solid #000}.c-m{background-color:#664229}.c-b,button{background-color:tan}.c-w{background-color:#e3dacc}.c-n{background-color:#212121}.p{display:block;border-radius:50%;width:30px;height:30px;display:flex}span{text-align:center}span:not(.p){margin-bottom:20px}.c{padding:16px;display:flex;justify-content:center;align-items:center;flex-direction:column;gap:12px}button{padding:12px;border:none;border-radius:12px;font-size:16px;font-weight:700;transition:background-color .3s,transform .3s}button:hover{background-color:#c19a6b;transform:scale(1.05)}h1{padding:4px;font-size:2em}@media (max-width:630px){#g td{width:40px;height:40px}.p{width:20px;height:20px}}@media screen and (max-width:400px){#g td{width:30px;height:30px}.p{width:15px;height:15px}}
+    </style>
+</head>
+<body>
+    <h1>Checkers</h1>
+    <span>This website generates a checkers table with the pieces in their initial positions. <br/>By clicking the button, you can shuffle the pieces randomly while maintaining a valid configuration.</span>
+
+    <div class="c">
+        <div id="g">
+        </div>
+        <button onclick="shuffle()">Shuffle</button>
+    </div>
+
+    <span>made with ❤ by <a href="https://github.com/gabdevele/">@gabdevele</a></span>
+</body>
+<script>
+const dame=[[1,0,1,0,1,0,1,0],[0,1,0,1,0,1,0,1],[1,0,1,0,1,0,1,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,2,0,2,0,2,0,2],[2,0,2,0,2,0,2,0],[0,2,0,2,0,2,0,2]],createTable=()=>{const e=document.createElement("table");e.setAttribute("cellspacing","0"),e.setAttribute("cellpadding","0");for(let t=0;t<8;t++){const a=e.insertRow();for(let e=0;e<8;e++){a.insertCell().className=(t+e)%2==0?"c-m":"c-b"}}document.querySelector("#g").appendChild(e)},addPieces=()=>{const e=document.querySelector("table");for(let t=0;t<8;t++)for(let a=0;a<8;a++){const l=e.rows[t].cells[a];if(l.innerHTML="",1===dame[t][a]||2===dame[t][a]){const e=document.createElement("span");e.className="p "+(1===dame[t][a]?"c-n":"c-w"),l.appendChild(e)}}},shuffleArray=e=>{for(let t=e.length-1;t>0;t--){const a=Math.floor(Math.random()*(t+1));[e[t],e[a]]=[e[a],e[t]]}},shuffle=()=>{const e=[],t=[];dame.forEach(((a,l)=>{a.forEach(((a,c)=>{((l+c)%2==0?e:t).push(a)}))})),shuffleArray(e),shuffleArray(t);let a=0,l=0;for(let c=0;c<8;c++)for(let r=0;r<8;r++)dame[c][r]=(c+r)%2==0?e[a++]:t[l++];addPieces()};createTable(),addPieces();
+</script>
+</html>
