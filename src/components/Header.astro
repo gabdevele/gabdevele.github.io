@@ -1,0 +1,220 @@
+---
+import IconX from "@/assets/icons/IconX.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconArchive from "@/assets/icons/IconArchive.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import LinkButton from "./LinkButton.astro";
+import { SITE } from "@/config";
+
+const { pathname } = Astro.url;
+
+const currentPath =
+  pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
+
+const isActive = (path: string) => {
+  const currentPathArray = currentPath.split("/").filter(p => p.trim());
+  const pathArray = path.split("/").filter(p => p.trim());
+  return (
+    currentPath === path ||
+    (pathArray.length > 0 && currentPathArray[0] === pathArray[0])
+  );
+};
+
+const navLinks = [
+  { href: "/posts", label: "Posts" },
+  { href: "/about", label: "About" },
+  { href: "/achievements", label: "Achievements" },
+];
+---
+
+<header
+  class="fixed top-4 left-1/2 z-50 w-[95%] max-w-6xl -translate-x-1/2 transition-all duration-300"
+>
+  <div
+    class="flex h-16 items-center justify-between rounded-full border border-white/20 bg-green-800/10 px-6 backdrop-blur-xl"
+  >
+    <a href="/" class="group header-title relative top-px flex items-center">
+      <span
+        class="text-2xl font-extrabold transition-opacity group-hover:opacity-80"
+      >
+        gab<span class="text-green-600">dev</span>ele<span
+          class="text-green-600">@</span
+        >dev
+      </span>
+    </a>
+
+    <nav class="hidden items-center space-x-6 md:flex">
+      {
+        navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              "text-md font-medium transition-colors hover:text-green-500",
+              isActive(link.href) ? "text-green-500" : "",
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+
+      <div
+        class="ml-4 flex items-center space-x-2 border-l border-white/10 pl-4"
+      >
+        {
+          SITE.showArchives && (
+            <LinkButton
+              href="/archives"
+              title="Archives"
+              class="p-2 hover:text-green-500"
+            >
+              <IconArchive class="size-5" />
+            </LinkButton>
+          )
+        }
+        <LinkButton
+          href="/search"
+          title="Search"
+          class="p-2 hover:text-green-500"
+        >
+          <IconSearch class="size-5" />
+        </LinkButton>
+
+        {
+          SITE.lightAndDarkMode && (
+            <button
+              id="theme-btn"
+              class="relative p-2 hover:text-green-500"
+              aria-label="Toggle Theme"
+            >
+              <IconMoon class="size-5 transition-all dark:scale-0" />
+              <IconSunHigh class="absolute top-2 size-5 scale-0 transition-all dark:scale-100" />
+            </button>
+          )
+        }
+      </div>
+    </nav>
+
+    <button
+      id="menu-btn"
+      class="inline-flex items-center justify-center rounded-md p-2 hover:bg-white/10 md:hidden"
+      aria-label="Open Menu"
+      aria-expanded="false"
+    >
+      <IconMenuDeep id="menu-icon" class="size-6" />
+      <IconX id="close-icon" class="hidden size-6" />
+    </button>
+  </div>
+
+  <div
+    id="menu-items"
+    class="menu-items mt-2 hidden rounded-3xl border border-white/10 p-4 backdrop-blur-2xl md:hidden"
+  >
+    <ul class="flex flex-col space-y-4">
+      {
+        navLinks.map(link => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                "block text-center text-lg",
+                isActive(link.href) ? "text-green-500" : "",
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="flex justify-center space-x-8 border-t border-white/10 pt-4">
+        <LinkButton href="/search" class="hover:text-green-500"
+          ><IconSearch /></LinkButton
+        >
+        {
+          SITE.showArchives && (
+            <LinkButton href="/archives" class="hover:text-green-500">
+              <IconArchive />
+            </LinkButton>
+          )
+        }
+        {
+          SITE.lightAndDarkMode && (
+            <button
+              id="theme-btn-mobile"
+              class="relative p-2 hover:text-green-500"
+              aria-label="Toggle Theme"
+            >
+              <IconMoon class="size-5 transition-all dark:scale-0" />
+              <IconSunHigh class="absolute top-2 size-5 scale-0 transition-all dark:scale-100" />
+            </button>
+          )
+        }
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  function setupNav() {
+    const menuBtn = document.querySelector("#menu-btn");
+    const menuItems = document.querySelector("#menu-items");
+    const menuIcon = document.querySelector("#menu-icon");
+    const closeIcon = document.querySelector("#close-icon");
+
+    menuBtn?.addEventListener("click", () => {
+      const isExpanded = menuBtn.getAttribute("aria-expanded") === "true";
+      menuBtn.setAttribute("aria-expanded", !isExpanded ? "true" : "false");
+
+      menuItems?.classList.toggle("hidden");
+      menuIcon?.classList.toggle("hidden");
+      closeIcon?.classList.toggle("hidden");
+    });
+  }
+
+  // Initial load
+  setupNav();
+  // Support for Astro View Transitions
+  document.addEventListener("astro:after-swap", setupNav);
+</script>
+
+<style>
+  @reference "tailwindcss";
+
+  /* Optional: Add a subtle glow to the active link */
+  .active-nav {
+    @apply text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.4)];
+  }
+
+  .menu-items {
+    background-color: color-mix(
+      in oklab,
+      var(--color-background) 90%,
+      transparent
+    );
+    border-color: color-mix(in oklab, var(--color-foreground) 18%, transparent);
+  }
+
+  .header-title::after {
+    content: "";
+    position: absolute;
+    top: 5;
+    right: -15px;
+    background-color: #ebebeb;
+    vertical-align: top;
+    width: 10px;
+    height: 24px;
+    animation: blink 1s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

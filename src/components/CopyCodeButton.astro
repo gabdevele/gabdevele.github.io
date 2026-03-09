@@ -1,0 +1,62 @@
+---
+import IconCopy from "@/assets/icons/IconCopy.svg";
+---
+
+<template id="tpl-copy-icon">
+  <IconCopy width="14" height="14" aria-hidden="true" />
+</template>
+<template id="tpl-check-icon">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20 6 9 17 4 12"></path>
+  </svg>
+</template>
+
+<script is:inline data-astro-rerun>
+  function attachCopyButtons() {
+    const copyIcon = document.getElementById("tpl-copy-icon").innerHTML;
+    const checkIcon = document.getElementById("tpl-check-icon").innerHTML;
+
+    for (const pre of document.querySelectorAll("pre")) {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+
+      const hasFileNameOffset =
+        getComputedStyle(pre).getPropertyValue("--file-name-offset").trim() !== "";
+
+      const btn = document.createElement("button");
+      btn.className = `copy-code absolute end-3 ${hasFileNameOffset ? "top-(--file-name-offset)" : "-top-3"} rounded bg-muted border border-muted p-1.5 text-foreground`;
+      btn.setAttribute("aria-label", "Copy code");
+      btn.innerHTML = copyIcon;
+
+      pre.setAttribute("tabindex", "0");
+      pre.appendChild(btn);
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      btn.addEventListener("click", async () => {
+        const text = pre.querySelector("code")?.innerText ?? "";
+        await navigator.clipboard.writeText(text);
+        btn.innerHTML = checkIcon;
+        btn.setAttribute("aria-label", "Copied!");
+        setTimeout(() => {
+          btn.innerHTML = copyIcon;
+          btn.setAttribute("aria-label", "Copy code");
+        }, 700);
+      });
+    }
+  }
+
+  attachCopyButtons();
+  document.addEventListener("astro:after-swap", attachCopyButtons);
+</script>

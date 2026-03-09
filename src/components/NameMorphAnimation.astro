@@ -1,0 +1,96 @@
+---
+
+---
+
+<div class="mb-8 flex h-full items-center overflow-visible">
+  <div
+    id="morph-container"
+    class="relative flex items-baseline text-5xl font-bold tracking-tight wrap-break-word whitespace-normal md:text-7xl"
+  >
+    <span class="static-text">gab</span><span
+      id="ri-el"
+      class="inline-block origin-center will-change-transform">ri</span
+    ><span
+      id="dev-el"
+      class="pointer-events-none inline-block origin-center font-bold text-green-600 opacity-0 will-change-transform"
+      >dev</span
+    ><span id="ele-el" class="static-text inline-block will-change-transform"
+      >ele</span
+    >
+  </div>
+</div>
+
+<script>
+  let isAnimating = false;
+
+  const initAnimation = () => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const riEl = document.getElementById("ri-el");
+    const devEl = document.getElementById("dev-el");
+    const eleEl = document.getElementById("ele-el");
+
+    if (!riEl || !devEl || !eleEl) return;
+
+    riEl.style.cssText = "";
+    devEl.style.cssText =
+      "opacity: 0; position: absolute; pointer-events: none;";
+    eleEl.style.cssText = "";
+
+    void riEl.offsetWidth;
+
+    const riRect = riEl.getBoundingClientRect();
+    if (riEl.parentElement === null) return;
+    const containerRect = riEl.parentElement.getBoundingClientRect();
+    const riLeft = riRect.left - containerRect.left;
+    const riWidth = riEl.offsetWidth;
+    const devWidth = devEl.offsetWidth;
+    const shiftAmount = devWidth - riWidth;
+
+    devEl.style.left = `${riLeft}px`;
+    devEl.style.transform = "scale(0.8)";
+    devEl.style.filter = "blur(20px)";
+
+    setTimeout(() => {
+      const morphDuration = "0.5s";
+
+      riEl.style.transition = `all ${morphDuration} ease-in`;
+      riEl.style.opacity = "0";
+      riEl.style.filter = "blur(20px)";
+      riEl.style.transform = "scale(0.8)";
+
+      devEl.style.transition = `all ${morphDuration} ease-out 0.2s`;
+      devEl.style.opacity = "1";
+      devEl.style.filter = "blur(0px)";
+      devEl.style.transform = "scale(1)";
+
+      eleEl.style.transition = `transform 0.4s ease-in-out 0.2s`;
+      eleEl.style.transform = `translateX(${shiftAmount}px)`;
+
+      setTimeout(() => {
+        [riEl, devEl, eleEl].forEach(el => {
+          el.style.transition = "none";
+        });
+
+        void eleEl.offsetWidth;
+
+        riEl.style.display = "none";
+        devEl.style.position = "relative";
+        devEl.style.left = "auto";
+        devEl.style.pointerEvents = "auto";
+        devEl.style.transform = "none";
+        eleEl.style.transform = "none";
+
+        isAnimating = false;
+      }, 800);
+    }, 500);
+  };
+
+  initAnimation();
+
+  document.addEventListener("astro:page-load", () => {
+    isAnimating = false;
+    initAnimation();
+  });
+</script>

@@ -1,0 +1,21 @@
+services:
+  astro-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gabdevele-astro:latest
+    container_name: astro_prod
+    restart: unless-stopped
+    ports:
+      - "4321:80"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
