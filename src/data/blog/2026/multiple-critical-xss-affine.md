@@ -1,5 +1,5 @@
 ---
-title: Multiple XSS Vulnerabilities in AFFiNE
+title: Multiple XSS Vulnerabilities in AFFiNE (Unpatched)
 author: gabdevele
 pubDatetime: 2026-03-15T17:44:57.411Z
 slug: multiple-critical-xss-affine
@@ -11,7 +11,7 @@ tags:
 description: Multiple critical XSS vulnerabilities I discovered in AFFiNE. Completely ignored by the AFFiNE team and still unpatched.
 ---
 
-Continuing the list of vulnerabilities I've found in AFFiNE, after the open redirect ([CVE-2026-25477](https://gabdevele.dev/posts/2026/cve-2026-25477/)), me and [Salvatore Abello](https://blog.babelo.xyz/) discovered **2 critical Cross-Site Scripting (XSS) vulnerabilities** that, unlike the open redirect, were **completely ignored** by the AFFiNE team and are **still unpatched**.
+Continuing the list of vulnerabilities I've found in AFFiNE, after the open redirect ([CVE-2026-25477](https://gabdevele.dev/posts/2026/cve-2026-25477/)), me and [Salvatore Abello](https://x.com/salvatoreabello) discovered **2 critical Cross-Site Scripting (XSS) vulnerabilities** that, unlike the open redirect, were **completely ignored** by the AFFiNE team and are **still unpatched**.
 
 ## Discovery
 
@@ -170,5 +170,5 @@ I'll be filing the vulnerability through **MITRE** since getting a CVE assigned 
 ```
 
 ## Conclusion
-Thanks to everyone who read this post, and a big thank you again to [Salvatore](https://blog.babelo.xyz/) for his contribution.
+Thanks to everyone who read this post, and a big thank you again to [Salvatore](https://x.com/salvatoreabello) for his contribution.
 I hope this reaches as many people as possible so we can put some pressure on the AFFiNE team to actually patch these vulnerabilities.
