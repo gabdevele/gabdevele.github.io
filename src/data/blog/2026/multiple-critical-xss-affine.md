@@ -27,7 +27,7 @@ After a bit more digging, I found what looked like a SSRF but couldn't really ex
 
 Let's start with the more interesting one: the **0-click XSS**.
 In short, when you insert a link in AFFiNE and switch to "Card View", the following endpoint gets called:
-`/api/worker/image-proxy/image-proxy?url=`
+`/api/worker/image-proxy?url=`
 where the URL is whatever link you inserted.
 This is done to show a link preview. Here's the source code:
 ```tsx
@@ -174,5 +174,5 @@ I'll be filing the vulnerability through **MITRE** since getting a CVE assigned 
 
 ## Conclusion
 Thanks to everyone who read this post, and a big thank you again to [Salvatore](https://x.com/salvatoreabello) for his contribution.
-If you are hosting an AFFiNE istance, use a proxy to block access to the vulnerable endpoint (`/api/worker/image-proxy/image-proxy?url=`) until this gets patched, and be careful with any links you click inside the editor if you work it with untrusted users.
+If you are hosting an AFFiNE istance, use a proxy to block access to the vulnerable endpoint (`/api/worker/image-proxy?url=`) until this gets patched, and be careful with any links you click inside the editor if you work it with untrusted users.
 I hope this reaches as many people as possible so we can put some pressure on the AFFiNE team to actually patch these vulnerabilities.
